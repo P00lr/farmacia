@@ -30,7 +30,7 @@ public class LaboratorioController {
         return service.findAll(); 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")    
     public ResponseEntity<?> ver(@PathVariable Long id) {
         Optional<Laboratorio> laborOptional = service.findById(id);
         if(laborOptional.isPresent()) {
