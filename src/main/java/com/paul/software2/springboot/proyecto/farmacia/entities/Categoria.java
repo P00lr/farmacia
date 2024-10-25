@@ -25,6 +25,10 @@ public class Categoria {
     @JsonBackReference
     private List<SubCategoria> subCategorias;
 
+    @OneToMany(mappedBy = "categoria") // Relación uno a muchos
+    @JsonBackReference
+    private List<Medicamento> medicamentos;
+
     public Categoria() {
     }
 
@@ -63,6 +67,14 @@ public class Categoria {
         this.subCategorias = subCategorias;
     }
 
+    public List<Medicamento> getMedicamentos() {
+        return medicamentos;
+    }
+
+    public void setMedicamentos(List<Medicamento> medicamentos) {
+        this.medicamentos = medicamentos;
+    }
+
     @Override
     public String toString() {
         return "{id=" + id + ", nombre=" + nombre + "}";
@@ -76,5 +88,8 @@ public class Categoria {
         this.subCategorias.add(subCategoria);
         subCategoria.setCategoria(this); // Establecer la relación inversa
     }
+
+    
+   
 
 }

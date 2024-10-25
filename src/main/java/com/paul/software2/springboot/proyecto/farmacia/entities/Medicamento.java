@@ -28,6 +28,10 @@ public class Medicamento {
     @ManyToOne
     @JsonManagedReference
     private Laboratorio laboratorio;
+
+    @ManyToOne
+    @JsonManagedReference
+    private Categoria categoria;
     
     public Medicamento() {
     }
@@ -89,12 +93,21 @@ public class Medicamento {
     public void setLaboratorio(Laboratorio laboratorio) {
         this.laboratorio = laboratorio;
     }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+
     @Override
     public String toString() {
         return "{id=" + id + ", nombre=" + nombre + ", precio=" + precio + ", fechaVencimiento="
                 + fechaVencimiento + ", contraIndicaciones=" + contraIndicaciones + ", efectosSecundarios="
                 + efectosSecundarios + ", tipoMedicamento=" + tipoMedicamento + ", laboratorio=" + laboratorio + "}";
     }
-
+   
     
 }
