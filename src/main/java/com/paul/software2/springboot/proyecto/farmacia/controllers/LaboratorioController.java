@@ -42,7 +42,7 @@ public class LaboratorioController {
     @PostMapping
     public ResponseEntity<Laboratorio> crear(@RequestBody Laboratorio laboratorio) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(laboratorio));
-    }
+    }   
 
     @PutMapping("/{id}")
     public ResponseEntity<Laboratorio> actualizar(@PathVariable Long id, @RequestBody Laboratorio laboratorio) {

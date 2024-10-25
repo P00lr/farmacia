@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +22,9 @@ public class Medicamento {
     private String contraIndicaciones;
     private String efectosSecundarios;
     private String tipoMedicamento;
+
+    @ManyToOne
+    private Laboratorio laboratorio;
     
     public Medicamento() {
     }
@@ -75,6 +79,18 @@ public class Medicamento {
     }
     public void setTipoMedicamento(String tipoMedicamento) {
         this.tipoMedicamento = tipoMedicamento;
+    }
+    public Laboratorio getLaboratorio() {
+        return laboratorio;
+    }
+    public void setLaboratorio(Laboratorio laboratorio) {
+        this.laboratorio = laboratorio;
+    }
+    @Override
+    public String toString() {
+        return "{id=" + id + ", nombre=" + nombre + ", precio=" + precio + ", fechaVencimiento="
+                + fechaVencimiento + ", contraIndicaciones=" + contraIndicaciones + ", efectosSecundarios="
+                + efectosSecundarios + ", tipoMedicamento=" + tipoMedicamento + ", laboratorio=" + laboratorio + "}";
     }
 
     
