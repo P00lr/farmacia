@@ -7,10 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import com.paul.software2.springboot.proyecto.farmacia.entities.Categoria;
 import com.paul.software2.springboot.proyecto.farmacia.entities.Laboratorio;
 import com.paul.software2.springboot.proyecto.farmacia.entities.Medicamento;
+import com.paul.software2.springboot.proyecto.farmacia.entities.Proveedor;
 import com.paul.software2.springboot.proyecto.farmacia.entities.SubCategoria;
 import com.paul.software2.springboot.proyecto.farmacia.repositories.CategoriaRepository;
 import com.paul.software2.springboot.proyecto.farmacia.repositories.LaboratorioRepository;
 import com.paul.software2.springboot.proyecto.farmacia.repositories.MedicamentoRepository;
+import com.paul.software2.springboot.proyecto.farmacia.repositories.ProveedorRepository;
 import com.paul.software2.springboot.proyecto.farmacia.repositories.SubCategoriaRepository;
 
 import java.util.Date;
@@ -22,7 +24,8 @@ public class DataSeeder {
             LaboratorioRepository laboratorioRepository,
             MedicamentoRepository medicamentoRepository,
             CategoriaRepository categoriaRepository,
-            SubCategoriaRepository subCategoriaRepository) {
+            SubCategoriaRepository subCategoriaRepository,
+            ProveedorRepository proveedorRepository) {
 
         return args -> {
             // Paso 1: Crear laboratorios
@@ -94,6 +97,15 @@ public class DataSeeder {
             // Guardar los medicamentos
             medicamentoRepository.save(med1);
             medicamentoRepository.save(med2);
+
+            //--------------------------------------------------------
+            // Paso 3: Crear proveedores
+            Proveedor proveedor1 = new Proveedor(null, "Proveedor A", "Bolivia", "La Paz", "Calle Falsa 123", "proveedora@example.com", "123456789");
+            Proveedor proveedor2 = new Proveedor(null, "Proveedor B", "Bolivia", "Santa Cruz", "Avenida Siempre Viva 456", "proveedorb@example.com", "987654321");
+
+            // Guardar proveedores
+            proveedorRepository.save(proveedor1);
+            proveedorRepository.save(proveedor2);
 
             // Mensaje en la consola para verificar que los datos fueron creados
             System.out.println("Datos de prueba insertados en la base de datos.");
