@@ -2,6 +2,8 @@ package com.paul.software2.springboot.proyecto.farmacia.entities;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +26,7 @@ public class Medicamento {
     private String tipoMedicamento;
 
     @ManyToOne
+    @JsonManagedReference
     private Laboratorio laboratorio;
     
     public Medicamento() {

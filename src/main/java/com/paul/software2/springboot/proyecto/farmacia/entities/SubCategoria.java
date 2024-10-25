@@ -1,5 +1,7 @@
 package com.paul.software2.springboot.proyecto.farmacia.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,12 +19,11 @@ public class SubCategoria {
     private String nombre;
 
     @ManyToOne
+    @JsonManagedReference
     private Categoria categoria;
 
     public SubCategoria() {
     }
-
-    
 
     public SubCategoria(Long id, String nombre, Categoria categoria) {
         this.id = id;

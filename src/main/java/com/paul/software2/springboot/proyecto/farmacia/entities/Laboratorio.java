@@ -4,7 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "laboratorios")
@@ -20,7 +24,23 @@ public class Laboratorio {
     private String pais;
     private String ciudad;
 
+    @OneToMany(mappedBy = "laboratorio")
+    @JsonBackReference
+    private List<Medicamento> medicamentos;
+
     public Laboratorio() {
+    }
+    
+    public Laboratorio(Long id, String nombre, String direccion, String telefono, String email, String pais,
+            String ciudad, List<Medicamento> medicamentos) {
+        this.id = id;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.email = email;
+        this.pais = pais;
+        this.ciudad = ciudad;
+        this.medicamentos = medicamentos;
     }
 
     public Laboratorio(Long id, String nombre, String direccion, String telefono, String email, String pais, String ciudad) {
@@ -89,9 +109,19 @@ public class Laboratorio {
         this.ciudad = ciudad;
     }
 
+    public List<Medicamento> getMedicamentos() {
+        return medicamentos;
+    }
+
+    public void setMedicamentos(List<Medicamento> medicamentos) {
+        this.medicamentos = medicamentos;
+    }
+
     @Override
     public String toString() {
         return "{id=" + id + ", nombre=" + nombre + ", direccion=" + direccion + ", telefono=" + telefono
                 + ", email=" + email + ", pais=" + pais + ", ciudad=" + ciudad + "}";
     }
+
+    
 }
