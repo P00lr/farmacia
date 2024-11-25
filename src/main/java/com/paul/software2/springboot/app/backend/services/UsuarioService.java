@@ -12,7 +12,7 @@ public interface UsuarioService {
     List<Usuario> listarTodo();
     Optional<Usuario> buscarPorId(Long id);
     Usuario guardar(Usuario usuario);
-    //Optional<User> actualizar(UserRequest user, Long id);//revisar
+    Optional<Usuario> actualizar(Usuario usuario, Long id);
     void eliminarPorId(Long id);
 
     boolean existeElUsername(String username);

@@ -54,19 +54,17 @@ public class LaboratorioValidation implements Validator {
         if (laboratorio.getTelefono() == null || laboratorio.getTelefono().isEmpty()) {
             errors.rejectValue(
                 "telefono",
-                 "telefono.requerido",
-                  "El teléfono es requerido");
+                "telefono.requerido",
+                "El teléfono es requerido"
+            );
         } else if (laboratorio.getTelefono().length() < 8 || laboratorio.getTelefono().length() > 15) {
             errors.rejectValue(
                 "telefono",
-                 "telefono.longitud",
-                  "El teléfono debe tener entre 8 y 15 caracteres");
-        } else if (!isValidPhoneNumber(laboratorio.getTelefono())) {
-            errors.rejectValue(
-                "telefono",
-                 "telefono.formato",
-                  "El teléfono debe tener un formato válido");
+                "telefono.longitud",
+                "El teléfono debe tener entre 8 y 15 caracteres"
+            );
         }
+        
     }
 
     // Validar formato del correo electrónico
@@ -74,10 +72,10 @@ public class LaboratorioValidation implements Validator {
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
         return Pattern.matches(emailRegex, email);
     }
-
-    // Validar formato del teléfono (por ejemplo, 123-456-7890)
+    //creo que no varia sin esto ya quite el formato
+    /* // Validar formato del teléfono (por ejemplo, 123-456-7890)
     private boolean isValidPhoneNumber(String phoneNumber) {
         String phoneRegex = "^\\d{3}-\\d{3}-\\d{4}$";
         return Pattern.matches(phoneRegex, phoneNumber);
-    }
+    } */
 }

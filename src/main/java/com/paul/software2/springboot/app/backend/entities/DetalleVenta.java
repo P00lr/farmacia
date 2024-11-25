@@ -20,12 +20,10 @@ public class DetalleVenta {
     private Double montoTipo;
     private Integer cantidadTipo;
     
-
     @ManyToOne
     @JsonIgnoreProperties({"detalleVentas", "handler", "hibernateLazyInitializer"})
     @MapsId("medicamentoId")
     private Medicamento medicamento;
-    
     
     @ManyToOne
     @JsonIgnoreProperties({"detalleVentas", "handler", "hibernateLazyInitializer"})

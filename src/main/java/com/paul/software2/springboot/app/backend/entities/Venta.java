@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -25,11 +26,16 @@ public class Venta {
     private Integer cantidadTotal;
     private LocalDateTime fechaVenta;
 
+    //principal, si muestra a medicamento
     @JsonIgnoreProperties({"venta", "handler", "hibernateLazyInitializer"})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "venta")
     private List<DetalleVenta> detalleVentas;
     
-    
+    @ManyToOne
+    private Cliente cliente;
+
+    @ManyToOne
+    private Usuario usuario;
     
     public Venta() {
         fechaVenta = LocalDateTime.now();
@@ -77,4 +83,22 @@ public class Venta {
     public void setDetalleVentas(List<DetalleVenta> detalleVentas) {
         this.detalleVentas = detalleVentas;
     }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -25,10 +26,19 @@ public class Medicamento {
     private String nombre;
     private Double precio;
 
+    //no muestra nada de venta
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnoreProperties({"medicamento", "handler", "hibernateLazyInitializer"})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "medicamento")
     private List<DetalleVenta> detalleVentas;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnoreProperties({"medicamento", "handler", "hibernateLazyInitializer"})
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "medicamento")
+    private List<DetalleAlmacen> detalleAlmacenes;
+
+    @ManyToOne
+    private Laboratorio laboratorio;
     
     public Medicamento() {
         detalleVentas = new ArrayList<>();
@@ -60,4 +70,11 @@ public class Medicamento {
     public void setDetalleVentas(List<DetalleVenta> detalleVentas) {
         this.detalleVentas = detalleVentas;
     }
+    public Laboratorio getLaboratorio() {
+        return laboratorio;
+    }
+    public void setLaboratorio(Laboratorio laboratorio) {
+        this.laboratorio = laboratorio;
+    }
+    
 }

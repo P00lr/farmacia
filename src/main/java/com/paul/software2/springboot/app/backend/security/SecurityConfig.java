@@ -51,6 +51,8 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .requestMatchers(HttpMethod.GET, "/api/laboratorios/page/{page}").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/proveedores/page/{page}").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/medicamentos/page/{page}").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/almacenes/page/{page}").permitAll()
+
 
 
         //*************RUTAS PROTEGIDAS**************************
@@ -95,6 +97,13 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .requestMatchers(HttpMethod.GET, "/api/ventas/{id}").hasAnyRole("USER", "ADMIN")
         .requestMatchers(HttpMethod.POST, "/api/ventas").hasAnyRole("USER", "ADMIN")
         .requestMatchers(HttpMethod.DELETE, "/api/ventas/{id}").hasAnyRole("USER", "ADMIN")
+
+        //ALMACENES
+        .requestMatchers(HttpMethod.GET, "/api/almacenes").hasAnyRole("USER", "ADMIN")
+        .requestMatchers(HttpMethod.GET, "/api/almacenes/{id}").hasAnyRole("USER", "ADMIN")
+        .requestMatchers(HttpMethod.POST, "/api/almacenes").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.POST, " /api/almacenes/agregar-medicamento").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.DELETE, "/api/almacenes/{id}").hasAnyRole("USER", "ADMIN")
 
          //DETALLES DE VENTAS //no es necesario esta por si acaso
          /* .requestMatchers(HttpMethod.GET, "/api/ventas").hasAnyRole("USER", "ADMIN")

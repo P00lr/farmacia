@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.paul.software2.springboot.app.backend.validation.ExistsByUsername;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,7 +45,7 @@ public class Usuario {
     @Email
     private String email;
 
-    @ExistsByUsername
+    // @ExistsByUsername
     @NotBlank
     @Size(min = 4, max = 10)
     @Column(unique = true)

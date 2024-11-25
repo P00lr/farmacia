@@ -78,5 +78,36 @@ public class UsuarioServiceImp implements UsuarioService{
         return usuarioRepository.existsByUsername(username);
     }
 
+    @Override
+    public Optional<Usuario> actualizar(Usuario usuario, Long id) {
+        Optional<Usuario> uOptional = usuarioRepository.findById(id);
+        if(uOptional.isPresent()) {
+            Usuario usuarioActualizado = uOptional.get();
+            usuarioActualizado.setNombre(usuario.getNombre());
+            usuarioActualizado.setApellido(usuario.getApellido());
+            usuarioActualizado.setCargo(usuario.getCargo());
+            usuarioActualizado.setEmail(usuario.getEmail());
+            usuarioActualizado.setUsername(usuario.getUsername());
+            usuarioActualizado.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            usuarioActualizado.setRoles(getRoles(usuario));
+
+            return Optional.of(usuarioRepository.save(usuarioActualizado));
+        }
+        return uOptional;
+
+    }
+
+    private List<Rol> getRoles(Usuario usuario) {
+        List<Rol> roles = new ArrayList<>();
+        Optional<Rol> optionalRoleUser = rolRepository.findByNombre("ROLE_USER");
+        optionalRoleUser.ifPresent(roles::add);
+
+        if (usuario.isAdmin()) {
+            Optional<Rol> optionalRoleAdmin = rolRepository.findByNombre("ROLE_ADMIN");
+            optionalRoleAdmin.ifPresent(roles::add);
+        }
+        return roles;
+    }
+
        
 }

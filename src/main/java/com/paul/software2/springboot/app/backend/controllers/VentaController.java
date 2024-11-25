@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paul.software2.springboot.app.backend.entities.Venta;
 import com.paul.software2.springboot.app.backend.services.VentaService;
 
-
 @RestController
 @RequestMapping("/api/ventas")
 public class VentaController {
@@ -32,6 +31,7 @@ public class VentaController {
     public List<Venta> listar() {
         return ventaService.listarTodo();
     }
+
     @GetMapping("/page/{page}")
     public ResponseEntity<?> listarPageable(@PathVariable Integer page) {
         Pageable pageable = PageRequest.of(page, 4);
@@ -49,11 +49,16 @@ public class VentaController {
     }
 
     @PostMapping
-    public ResponseEntity<Venta> crear(@RequestBody Venta venta) {
-        Venta nuevaVenta = ventaService.crearVentaConDetalle(venta);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaVenta);
+    public ResponseEntity<String> crear(@RequestBody Venta venta) {
+        try {
+            ventaService.crearVentaConDetalle(venta);
+            Long id = venta.getId();
+            return ResponseEntity.status(HttpStatus.CREATED).body("Venta con ID: " + id + " creada exitosamente");
+        } catch (RuntimeException ex) {
+            // Maneja excepciones como stock insuficiente
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
-    
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
