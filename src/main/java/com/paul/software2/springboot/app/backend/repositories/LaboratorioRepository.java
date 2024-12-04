@@ -8,4 +8,5 @@ import com.paul.software2.springboot.app.backend.entities.Laboratorio;
 
 public interface LaboratorioRepository extends CrudRepository<Laboratorio, Long>{
     Page<Laboratorio> findAll(Pageable pageable);
+    boolean existsByNombre(String nombre);
 }

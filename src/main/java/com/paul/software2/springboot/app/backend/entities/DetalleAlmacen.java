@@ -29,6 +29,14 @@ public class DetalleAlmacen {
     @MapsId("almacenId")
     private Almacen almacen;
 
+    
+   
+
+    public DetalleAlmacen(DetalleAlmacenId id, Integer stock) {
+        this.id = id;
+        this.stock = stock;
+    }
+
     public DetalleAlmacen() {
     }
 

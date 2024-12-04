@@ -60,14 +60,27 @@ public class AlmacenController {
     }
 
     @PostMapping
-    public ResponseEntity<?> crear(@Valid @RequestBody Almacen almacen, BindingResult result) {
-        validation.validate(almacen, result);
+public ResponseEntity<?> crear(@Valid @RequestBody Almacen almacen, BindingResult result) {
+    // Validar los campos del almacen
+    validation.validate(almacen, result);
 
-        if (result.hasErrors()) {
-            return validation(result);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(almacenService.guardar(almacen));
+    if (result.hasErrors()) {
+        // Si hay errores de validación, devolverlos al cliente
+        return validation(result);
     }
+
+    try {
+        // Intentar guardar el almacen
+        Almacen almacenCreado = almacenService.guardar(almacen);
+        return ResponseEntity.status(HttpStatus.CREATED).body(almacenCreado);
+    } catch (RuntimeException ex) {
+        // Capturar y devolver el mensaje de excepción como respuesta clara
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+            "error", ex.getMessage()
+        ));
+    }
+}
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Almacen almacen,

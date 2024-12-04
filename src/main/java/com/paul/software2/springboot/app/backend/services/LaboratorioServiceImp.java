@@ -39,6 +39,9 @@ public class LaboratorioServiceImp implements LaboratorioService{
     @Transactional
     @Override
     public Laboratorio guardar(Laboratorio laboratorio) {
+        if (existeElLaboratorio(laboratorio.getNombre())) {
+            throw new RuntimeException("El laboratorio con nombre: " + laboratorio.getNombre() + " ya existe en la base de datos");
+        }
         return laboratorioRepository.save(laboratorio);
     }
 
@@ -71,5 +74,10 @@ public class LaboratorioServiceImp implements LaboratorioService{
             laboratorioRepository.delete(cliDB);
         });
         return lOptional;
+    }
+
+    @Override
+    public boolean existeElLaboratorio(String laboratorioNombre){
+        return laboratorioRepository.existsByNombre(laboratorioNombre);
     }
 }

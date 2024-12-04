@@ -13,8 +13,8 @@ import com.paul.software2.springboot.app.backend.entities.Medicamento;
 import com.paul.software2.springboot.app.backend.repositories.MedicamentoRepository;
 
 @Service
-public class MedicamentoServiceImp implements MedicamentoService{
-    
+public class MedicamentoServiceImp implements MedicamentoService {
+
     @Autowired
     private MedicamentoRepository medicamentoRepository;
 
@@ -39,21 +39,24 @@ public class MedicamentoServiceImp implements MedicamentoService{
     @Transactional
     @Override
     public Medicamento guardar(Medicamento medicamento) {
+        if (existeElMedicamento(medicamento.getNombre())) {
+            throw new RuntimeException(
+                    "El medicamento con nombre '" + medicamento.getNombre() + "' ya existe en la base de datos");
+        }
         return medicamentoRepository.save(medicamento);
     }
 
-    
     @Transactional
     @Override
     public Optional<Medicamento> actualizar(Long id, Medicamento medicamento) {
         Optional<Medicamento> productOptional = medicamentoRepository.findById(id);
         if (productOptional.isPresent()) {
             Medicamento medicamentDb = productOptional.orElseThrow();
-    
+
             // Actualizar todos los campos
             medicamentDb.setNombre(medicamento.getNombre());
             medicamentDb.setPrecio(medicamento.getPrecio());
-    
+
             // Guardar los cambios en la base de datos
             return Optional.of(medicamentoRepository.save(medicamentDb));
         }
@@ -68,5 +71,10 @@ public class MedicamentoServiceImp implements MedicamentoService{
             medicamentoRepository.delete(medDB);
         });
         return mOptional;
+    }
+
+    @Override
+    public boolean existeElMedicamento(String medicamentoNombre) {
+        return medicamentoRepository.existsByNombre(medicamentoNombre);
     }
 }

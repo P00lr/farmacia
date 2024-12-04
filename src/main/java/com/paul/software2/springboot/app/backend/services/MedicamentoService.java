@@ -15,4 +15,5 @@ public interface MedicamentoService {
     Medicamento guardar(Medicamento cliente);
     Optional<Medicamento> actualizar(Long id, Medicamento cliente);
     Optional<Medicamento> eliminar(Long id);
+    boolean existeElMedicamento(String medicamentoNombre);
 }

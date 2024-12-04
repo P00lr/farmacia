@@ -60,22 +60,36 @@ public class MedicamentoController {
 
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Medicamento medicamento, BindingResult result) {
-        validation.validate(medicamento, result);
 
+        validation.validate(medicamento, result);
         if (result.hasErrors()) {
             return validation(result);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(medicamentoService.guardar(medicamento));
+
+        try {
+            // Intentar guardar el medicamento
+            return ResponseEntity.status(HttpStatus.CREATED).body(medicamentoService.guardar(medicamento));
+        } catch (RuntimeException ex) {
+            // Capturar excepción de duplicado
+            Map<String, String> response = new HashMap<>();
+            response.put("error", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception ex) {
+            // Capturar cualquier otra excepción
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Ocurrió un error inesperado: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Medicamento medicamento,
             BindingResult result) {
-    
+
         validation.validate(medicamento, result);
 
         if (result.hasErrors()) {
-            return validation(result); 
+            return validation(result);
         }
 
         Optional<Medicamento> mOptional = medicamentoService.actualizar(id, medicamento);

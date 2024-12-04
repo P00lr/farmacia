@@ -8,4 +8,5 @@ import com.paul.software2.springboot.app.backend.entities.Almacen;
 
 public interface AlmacenRepository extends CrudRepository<Almacen, Long>{
     Page<Almacen> findAll(Pageable pageable);
+    boolean existsByNombre(String nombre);
 }

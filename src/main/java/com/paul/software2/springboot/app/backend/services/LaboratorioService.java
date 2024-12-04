@@ -15,4 +15,5 @@ public interface LaboratorioService {
     Laboratorio guardar(Laboratorio laboratorio);
     Optional<Laboratorio> actualizar(Long id, Laboratorio la);
     Optional<Laboratorio> eliminar(Long id);
+    boolean existeElLaboratorio(String laboratorioNombre);
 }

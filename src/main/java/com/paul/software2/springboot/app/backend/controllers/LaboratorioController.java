@@ -61,12 +61,21 @@ public class LaboratorioController {
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Laboratorio laboratorio, BindingResult result) {
         validation.validate(laboratorio, result);
-
+    
         if (result.hasErrors()) {
             return validation(result);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(laboratorioService.guardar(laboratorio));
+    
+        try {
+            Laboratorio laboratorioCreado = laboratorioService.guardar(laboratorio);
+            return ResponseEntity.status(HttpStatus.CREATED).body(laboratorioCreado);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                "error", ex.getMessage()
+            ));
+        }
     }
+    
 
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Laboratorio laboratorio,

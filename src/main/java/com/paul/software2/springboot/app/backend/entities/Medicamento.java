@@ -35,6 +35,11 @@ public class Medicamento {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnoreProperties({"medicamento", "handler", "hibernateLazyInitializer"})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "medicamento")
+    private List<DetalleCompra> detalleCompras;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnoreProperties({"medicamento", "handler", "hibernateLazyInitializer"})
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "medicamento")
     private List<DetalleAlmacen> detalleAlmacenes;
 
     @ManyToOne
@@ -42,6 +47,7 @@ public class Medicamento {
     
     public Medicamento() {
         detalleVentas = new ArrayList<>();
+        detalleCompras = new ArrayList<>();
     }
     public Medicamento(Long id) {
         this.id = id;
@@ -76,5 +82,12 @@ public class Medicamento {
     public void setLaboratorio(Laboratorio laboratorio) {
         this.laboratorio = laboratorio;
     }
+    public List<DetalleCompra> getDetalleCompras() {
+        return detalleCompras;
+    }
+    public void setDetalleCompras(List<DetalleCompra> detalleCompras) {
+        this.detalleCompras = detalleCompras;
+    }
+    
     
 }

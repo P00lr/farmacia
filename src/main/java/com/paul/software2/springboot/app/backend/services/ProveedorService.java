@@ -15,4 +15,5 @@ public interface ProveedorService {
     Proveedor guardar(Proveedor proveedor);
     Optional<Proveedor> actualizar(Long id, Proveedor proveedor);
     Optional<Proveedor> eliminar(Long id);
+    boolean existeElProveedor(String proveedorNombre);
 }

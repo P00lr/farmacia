@@ -61,12 +61,23 @@ public class ProveedorController {
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Proveedor proveedor, BindingResult result) {
         validation.validate(proveedor, result);
-
+    
         if (result.hasErrors()) {
-            return validation(result);
+            return validation(result); 
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(proveedorService.guardar(proveedor));
+    
+        try {
+            // Intenta guardar el proveedor
+            Proveedor proveedorCreado = proveedorService.guardar(proveedor);
+            return ResponseEntity.status(HttpStatus.CREATED).body(proveedorCreado);
+        } catch (RuntimeException ex) {
+            // Captura excepciones de negocio y devuelve un mensaje amigable
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                "error", ex.getMessage()
+            ));
+        }
     }
+    
 
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Proveedor proveedor,

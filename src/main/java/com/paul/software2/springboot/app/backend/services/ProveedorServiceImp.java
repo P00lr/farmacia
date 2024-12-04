@@ -40,6 +40,9 @@ public class ProveedorServiceImp implements ProveedorService {
     @Transactional
     @Override
     public Proveedor guardar(Proveedor proveedor) {
+        if(existeElProveedor(proveedor.getNombre())) {
+            throw new RuntimeException("El proveedor con nombre " + proveedor.getNombre() + " ya existe en la base de datos");
+        }
         return proveedorRepository.save(proveedor);
     }
 
@@ -72,5 +75,10 @@ public class ProveedorServiceImp implements ProveedorService {
             proveedorRepository.delete(proDB);
         });
         return pOptional;
+    }
+
+    @Override
+    public boolean existeElProveedor(String proveedorNombre){
+        return proveedorRepository.existsByNombre(proveedorNombre);
     }
 }

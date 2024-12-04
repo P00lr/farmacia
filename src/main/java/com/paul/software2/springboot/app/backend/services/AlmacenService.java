@@ -17,6 +17,6 @@ public interface AlmacenService {
     Optional<Almacen> actualizar(Long id, Almacen almacen);
     Optional<Almacen> eliminar(Long id);
     
-    //prueba
     void agregarMedicamento(DetalleAlmacen detalleAlmacen);
+    boolean existeElAlmacen(String almacenNombre);
 }

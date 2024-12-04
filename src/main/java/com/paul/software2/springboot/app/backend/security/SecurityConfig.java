@@ -52,6 +52,9 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .requestMatchers(HttpMethod.GET, "/api/proveedores/page/{page}").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/medicamentos/page/{page}").permitAll()
         .requestMatchers(HttpMethod.GET, "/api/almacenes/page/{page}").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/compras/page/{page}").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/ventas/page/{page}").permitAll()
+
 
 
 
@@ -98,12 +101,23 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .requestMatchers(HttpMethod.POST, "/api/ventas").hasAnyRole("USER", "ADMIN")
         .requestMatchers(HttpMethod.DELETE, "/api/ventas/{id}").hasAnyRole("USER", "ADMIN")
 
+        //COMPRAS
+        .requestMatchers(HttpMethod.GET, "/api/compras").hasAnyRole("USER", "ADMIN")
+        .requestMatchers(HttpMethod.GET, "/api/compras/{id}").hasAnyRole("USER", "ADMIN")
+        .requestMatchers(HttpMethod.POST, "/api/compras").hasAnyRole("USER", "ADMIN")
+        .requestMatchers(HttpMethod.DELETE, "/api/compras/{id}").hasAnyRole("USER", "ADMIN")
+
         //ALMACENES
         .requestMatchers(HttpMethod.GET, "/api/almacenes").hasAnyRole("USER", "ADMIN")
         .requestMatchers(HttpMethod.GET, "/api/almacenes/{id}").hasAnyRole("USER", "ADMIN")
         .requestMatchers(HttpMethod.POST, "/api/almacenes").hasRole("ADMIN")
         .requestMatchers(HttpMethod.POST, " /api/almacenes/agregar-medicamento").hasRole("ADMIN")
         .requestMatchers(HttpMethod.DELETE, "/api/almacenes/{id}").hasAnyRole("USER", "ADMIN")
+
+        //DASHBOARD
+        .requestMatchers(HttpMethod.GET, "/api/dashboard/total-stock").hasAnyRole("USER", "ADMIN")
+        .requestMatchers(HttpMethod.GET, "/stock-por-almacen/{almacenId}").hasAnyRole("USER", "ADMIN")
+
 
          //DETALLES DE VENTAS //no es necesario esta por si acaso
          /* .requestMatchers(HttpMethod.GET, "/api/ventas").hasAnyRole("USER", "ADMIN")

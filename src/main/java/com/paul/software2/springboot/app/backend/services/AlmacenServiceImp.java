@@ -51,6 +51,9 @@ public class AlmacenServiceImp  implements AlmacenService{
     @Transactional
     @Override
     public Almacen guardar(Almacen almacen) {
+        if (existeElAlmacen(almacen.getNombre())) {
+            throw new RuntimeException("El almacen con nombre: " + almacen.getNombre() + " ya existe en la base de datos");
+        }
         return almacenRepository.save(almacen);
     }
 
@@ -121,5 +124,8 @@ public class AlmacenServiceImp  implements AlmacenService{
         detalleRepository.save(detalle);
     }
     
+    public boolean existeElAlmacen(String almacenNombre){
+        return almacenRepository.existsByNombre(almacenNombre);
+    }
 
 }
