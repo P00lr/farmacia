@@ -18,6 +18,7 @@ public class DetalleAlmacen {
     private DetalleAlmacenId id;
 
     private Integer stock;
+    private String estado;
 
     @ManyToOne
     @JsonIgnoreProperties({"detalleAlmacenes", "handler", "hibernateLazyInitializer"})
@@ -55,6 +56,13 @@ public class DetalleAlmacen {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
     public Medicamento getMedicamento() {
         return medicamento;
@@ -71,6 +79,5 @@ public class DetalleAlmacen {
     public void setAlmacen(Almacen almacen) {
         this.almacen = almacen;
     }
-
     
 }

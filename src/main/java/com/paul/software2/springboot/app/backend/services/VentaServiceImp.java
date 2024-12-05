@@ -71,75 +71,83 @@ public class VentaServiceImp implements VentaService {
     }
 
     @Transactional
-    public Venta crearVentaConDetalle(CrearVentaDto crearVentaDTO) {
-        Venta venta = new Venta();
-        double montoTotal = 0.0;
-        int cantidadTotal = 0;
+public Venta crearVentaConDetalle(CrearVentaDto crearVentaDTO) {
+    Venta venta = new Venta();
+    double montoTotal = 0.0;
+    int cantidadTotal = 0;
 
-        // Asignar cliente y usuario
-        Cliente cliente = clienteRepository.findById(crearVentaDTO.getClienteId())
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-        Usuario usuario = usuarioRepository.findById(crearVentaDTO.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    // Asignar cliente y usuario
+    Cliente cliente = clienteRepository.findById(crearVentaDTO.getClienteId())
+            .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    Usuario usuario = usuarioRepository.findById(crearVentaDTO.getUsuarioId())
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        venta.setCliente(cliente);
-        venta.setUsuario(usuario);
+    venta.setCliente(cliente);
+    venta.setUsuario(usuario);
 
-        // Lista para verificar duplicados
-        Set<Long> medicamentosProcesados = new HashSet<>();
+    // Lista para verificar duplicados
+    Set<Long> medicamentosProcesados = new HashSet<>();
 
-        // Procesar detalles de la venta
-        if (crearVentaDTO.getDetalleVentas() != null) {
-            for (CrearDetalleVentaDto detalleDTO : crearVentaDTO.getDetalleVentas()) {
-                Long medicamentoId = detalleDTO.getMedicamentoId();
+    // Procesar detalles de la venta
+    if (crearVentaDTO.getDetalleVentas() != null) {
+        for (CrearDetalleVentaDto detalleDTO : crearVentaDTO.getDetalleVentas()) {
+            Long medicamentoId = detalleDTO.getMedicamentoId();
 
-                // Verificar duplicado
-                if (medicamentosProcesados.contains(medicamentoId)) {
-                    throw new RuntimeException(
-                            "El medicamento con ID: " + medicamentoId + " ya está incluido en la venta");
-                }
-
-                Medicamento medicamento = medicamentoRepository.findById(medicamentoId)
-                        .orElseThrow(() -> new RuntimeException(
-                                "El medicamento con ID: " + medicamentoId + " no está registrado en la base de datos"));
-
-                DetalleAlmacenId detalleAlmacenId = new DetalleAlmacenId(1L, medicamentoId);
-                DetalleAlmacen detalleAlmacen = detalleAlmacenRepository.findById(detalleAlmacenId)
-                        .orElseThrow(() -> new RuntimeException(
-                                "El medicamento " + medicamento.getNombre() + " no está disponible para la venta en el almacen 1"));
-
-                if (detalleAlmacen.getStock() < detalleDTO.getCantidadTipo()) {
-                    throw new RuntimeException("Stock insuficiente para el medicamento " + medicamento.getNombre() + " con ID: " + medicamentoId);
-                }
-
-                // Actualizar stock y calcular montos
-                detalleAlmacen.setStock(detalleAlmacen.getStock() - detalleDTO.getCantidadTipo());
-                detalleAlmacenRepository.save(detalleAlmacen);
-
-                DetalleVenta detalle = new DetalleVenta();
-                detalle.setId(new DetalleVentaId(venta.getId(), medicamentoId)); // Crear ID compuesto
-                detalle.setMedicamento(medicamento);
-                detalle.setVenta(venta);
-                detalle.setCantidadTipo(detalleDTO.getCantidadTipo());
-                detalle.setMontoTipo(medicamento.getPrecio() * detalleDTO.getCantidadTipo());
-
-                venta.getDetalleVentas().add(detalle);
-
-                // Agregar a la lista de medicamentos procesados
-                medicamentosProcesados.add(medicamentoId);
-
-                montoTotal += detalle.getMontoTipo();
-                cantidadTotal += detalleDTO.getCantidadTipo();
+            // Verificar duplicado
+            if (medicamentosProcesados.contains(medicamentoId)) {
+                throw new RuntimeException(
+                        "El medicamento con ID: " + medicamentoId + " ya está incluido en la venta");
             }
+
+            Medicamento medicamento = medicamentoRepository.findById(medicamentoId)
+                    .orElseThrow(() -> new RuntimeException(
+                            "El medicamento con ID: " + medicamentoId + " no está registrado en la base de datos"));
+
+            // Buscar stock en el almacén 1
+            DetalleAlmacenId detalleAlmacenId1 = new DetalleAlmacenId(1L, medicamentoId);
+            DetalleAlmacen detalleAlmacen1 = detalleAlmacenRepository.findById(detalleAlmacenId1)
+                    .orElseThrow(() -> new RuntimeException(
+                            "El medicamento " + medicamento.getNombre() + " no está disponible para la venta en el almacen 1"));
+
+            if (detalleAlmacen1.getStock() < detalleDTO.getCantidadTipo()) {
+                throw new RuntimeException("Stock insuficiente para el medicamento " + medicamento.getNombre() + " con ID: " + medicamentoId);
+            }
+
+            // Actualizar stock en el almacén 1
+            detalleAlmacen1.setStock(detalleAlmacen1.getStock() - detalleDTO.getCantidadTipo());
+            detalleAlmacenRepository.save(detalleAlmacen1);
+
+            // Reabastecer si el stock baja de 20
+            if (detalleAlmacen1.getStock() < 20) {
+                reabastecerAlmacen(detalleAlmacen1, medicamentoId);
+            }
+
+            // Crear detalle de venta
+            DetalleVenta detalle = new DetalleVenta();
+            detalle.setId(new DetalleVentaId(venta.getId(), medicamentoId)); // Crear ID compuesto
+            detalle.setMedicamento(medicamento);
+            detalle.setVenta(venta);
+            detalle.setCantidadTipo(detalleDTO.getCantidadTipo());
+            detalle.setMontoTipo(medicamento.getPrecio() * detalleDTO.getCantidadTipo());
+
+            venta.getDetalleVentas().add(detalle);
+
+            // Agregar a la lista de medicamentos procesados
+            medicamentosProcesados.add(medicamentoId);
+
+            montoTotal += detalle.getMontoTipo();
+            cantidadTotal += detalleDTO.getCantidadTipo();
         }
-
-        // Establecer totales
-        venta.setMontoTotal(montoTotal);
-        venta.setCantidadTotal(cantidadTotal);
-
-        // Guardar venta
-        return guardar(venta);
     }
+
+    // Establecer totales
+    venta.setMontoTotal(montoTotal);
+    venta.setCantidadTotal(cantidadTotal);
+
+    // Guardar venta
+    return guardar(venta);
+}
+
 
     @Override
     public Optional<Venta> eliminar(Long id) {
@@ -170,5 +178,32 @@ public class VentaServiceImp implements VentaService {
                 detallesDTO);
 
     }
+
+    private void reabastecerAlmacen(DetalleAlmacen detalleAlmacen1, Long medicamentoId) {
+        // Buscar stock en el almacén 2
+        DetalleAlmacenId detalleAlmacenId2 = new DetalleAlmacenId(2L, medicamentoId);
+        DetalleAlmacen detalleAlmacen2 = detalleAlmacenRepository.findById(detalleAlmacenId2)
+                .orElseThrow(() -> new RuntimeException(
+                        "No hay stock disponible para el medicamento con ID: " + medicamentoId + " en el almacen 2"));
+    
+        // Determinar la cantidad a transferir (50 unidades)
+        int cantidadReabastecer = 50;
+    
+        // Verificar si hay suficiente stock en el almacén 2
+        if (detalleAlmacen2.getStock() >= cantidadReabastecer) {
+            // Transferir 50 unidades del almacén 2 al almacén 1
+            detalleAlmacen1.setStock(detalleAlmacen1.getStock() + cantidadReabastecer);
+            detalleAlmacen2.setStock(detalleAlmacen2.getStock() - cantidadReabastecer);
+    
+            detalleAlmacenRepository.save(detalleAlmacen1);
+            detalleAlmacenRepository.save(detalleAlmacen2);
+        } else {
+            // Si no hay suficiente stock en el almacén 2
+            detalleAlmacen1.setEstado("PENDIENTE");
+            detalleAlmacenRepository.save(detalleAlmacen1);
+        }
+    }
+    
+    
 
 }

@@ -62,7 +62,8 @@ public class CompraServiceImp implements CompraService {
 
         for (DetalleCompra detalle : compra.getDetalleCompras()) {
             // Validar si el medicamentoId ya fue procesado
-            if (!medicamentoIds.add(detalle.getId().getMedicamentoId())) {//si es true lo agrega pero se niega para que no entre
+            if (!medicamentoIds.add(detalle.getId().getMedicamentoId())) { // si es true lo agrega pero se niega para
+                                                                           // que no entre
                 throw new IllegalArgumentException(
                         "Error: El medicamento con ID " + detalle.getId().getMedicamentoId()
                                 + " está duplicado en la compra.");
@@ -74,17 +75,20 @@ public class CompraServiceImp implements CompraService {
                             "Medicamento no encontrado con ID: " + detalle.getId().getMedicamentoId()));
 
             DetalleAlmacenId detalleAlmacenId = new DetalleAlmacenId(2L, medicamento.getId());
-            
-            DetalleAlmacen detalleAlmacen = detalleAlmacenRepository.findById(detalleAlmacenId)
-            .orElseThrow(() -> new RuntimeException("Medicamento con ID: " + medicamento.getId() + " no existe en el almacen secundario, primero registrelo en el almacen e intente agregar los medicamentos"));
 
-            //actualizamos el stock del medicamento agregado
+            DetalleAlmacen detalleAlmacen = detalleAlmacenRepository.findById(detalleAlmacenId)
+                    .orElseThrow(() -> new RuntimeException("Medicamento con ID: " + medicamento.getId()
+                            + " no existe en el almacen secundario, primero registrelo en el almacen e intente agregar los medicamentos"));
+
+            // Actualizamos el stock del medicamento agregado
             detalleAlmacen.setStock(detalleAlmacen.getStock() + detalle.getCantidadTipo());
-            
+
+            detalleAlmacen.setEstado("DISPONIBLE");
+
             // Establecer la relación y calcular el monto por detalle
             detalle.setCompra(compra);
             detalle.setMedicamento(medicamento);
-            
+
             double montoTipo = medicamento.getPrecio() * detalle.getCantidadTipo();
             detalle.setMontoTipo(montoTipo);
 
